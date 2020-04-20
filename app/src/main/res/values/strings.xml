@@ -4,4 +4,6 @@
     <string name="party_games_label">PARTY GAMES</string>
     <string name="soft_games_label">SOFT GAMES</string>
     <string name="choose_a_game">CHOOSE A GAME</string>
+    <string name="startRule">Lancez les dés</string>
+    <string name="endRule">Les dés sont lancée</string>
 </resources>
