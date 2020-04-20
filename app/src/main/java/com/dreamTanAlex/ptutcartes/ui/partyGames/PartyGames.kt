@@ -6,6 +6,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageView
+import androidx.navigation.fragment.findNavController
 import com.dreamTanAlex.ptutcartes.R
 
 
@@ -21,7 +24,12 @@ class PartyGames : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.party_games_fragment, container, false)
+        val view = inflater.inflate(R.layout.party_games_fragment, container, false)
+        val button = view.findViewById<Button>(R.id.goToBizkit)
+        button.setOnClickListener {
+            findNavController().navigate(R.id.action_partyGames_to_bizkit)
+        }
+        return view
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
