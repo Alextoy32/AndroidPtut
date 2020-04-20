@@ -4,4 +4,7 @@
     <string name="party_games_label">PARTY GAMES</string>
     <string name="soft_games_label">SOFT GAMES</string>
     <string name="choose_a_game">CHOOSE A GAME</string>
+    <string name="biskit">Biskit</string>
+    <string name="autoroute">Autoroute</string>
+    <string name="pyramide">Pyramide</string>
 </resources>
