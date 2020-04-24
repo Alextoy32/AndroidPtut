@@ -22,9 +22,16 @@
         <action
             android:id="@+id/action_partyGames_to_bizkit"
             app:destination="@id/bizkit" />
+        <action
+            android:id="@+id/action_partyGames_to_connectionPage"
+            app:destination="@id/connectionPage" />
     </fragment>
     <fragment
         android:id="@+id/bizkit"
         android:name="com.dreamTanAlex.ptutcartes.ui.bizkit.Bizkit"
         android:label="Bizkit" />
+    <fragment
+        android:id="@+id/connectionPage"
+        android:name="com.dreamTanAlex.ptutcartes.ui.connection.ConnectionPage"
+        android:label="ConnectionPage" />
 </navigation>

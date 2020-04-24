@@ -1,5 +1,6 @@
 package com.dreamTanAlex.ptutcartes.ui.partyGames
 
+import android.media.Image
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -25,9 +26,13 @@ class PartyGames : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.party_games_fragment, container, false)
-        val button = view.findViewById<Button>(R.id.goToBizkit)
-        button.setOnClickListener {
+        val bizkitImage = view.findViewById<ImageView>(R.id.bizkitImage)
+        bizkitImage.setOnClickListener {
             findNavController().navigate(R.id.action_partyGames_to_bizkit)
+        }
+        val autoroutes = view.findViewById<ImageView>(R.id.autorouteImage)
+        autoroutes.setOnClickListener {
+            findNavController().navigate(R.id.action_partyGames_to_connectionPage)
         }
         return view
     }

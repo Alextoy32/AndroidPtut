@@ -20,7 +20,7 @@
         tools:context=".ui.bizkit.Bizkit">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/autorouteImage"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="32dp"
@@ -43,7 +43,7 @@
             android:src="@{viewModel.displayed.dice2, default=@drawable/ic_dice_one}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageView"
+            app:layout_constraintStart_toEndOf="@+id/autorouteImage"
             app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
         <TextView

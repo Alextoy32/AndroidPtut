@@ -30,9 +30,6 @@ class MainFragment : Fragment() {
             findNavController().navigate(R.id.action_mainFragment_to_partyGames)
         }
         val softImg = view.findViewById<ImageView>(R.id.softGame)
-        softImg.setOnClickListener {
-            findNavController().navigate(R.id.action_mainFragment_to_connectionPage)
-        }
         return view
     }
 
