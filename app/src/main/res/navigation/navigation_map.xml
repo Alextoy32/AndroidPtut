@@ -13,10 +13,18 @@
         <action
             android:id="@+id/action_mainFragment_to_partyGames"
             app:destination="@id/partyGames" />
+        <action
+            android:id="@+id/action_mainFragment_to_connectionPage"
+            app:destination="@id/connectionPage" />
     </fragment>
     <fragment
         android:id="@+id/partyGames"
         android:name="com.dreamTanAlex.ptutcartes.ui.partyGames.PartyGames"
         android:label="party_games_fragment"
         tools:layout="@layout/party_games_fragment" />
+    <fragment
+        android:id="@+id/connectionPage"
+        android:name="com.dreamTanAlex.ptutcartes.ui.connection.ConnectionPage"
+        android:label="ConnectionPage"
+        tools:layout="@layout/connection_page_fragment" />
 </navigation>
