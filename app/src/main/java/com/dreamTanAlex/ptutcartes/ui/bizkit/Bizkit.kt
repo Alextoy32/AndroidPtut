@@ -1,6 +1,7 @@
 package com.dreamTanAlex.ptutcartes.ui.bizkit
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.dreamTanAlex.ptutcartes.R
 import com.dreamTanAlex.ptutcartes.databinding.BizkitFragmentBinding
+import androidx.databinding.BindingAdapter
+import android.widget.ImageView
 
 
 class Bizkit : Fragment() {
@@ -31,14 +34,15 @@ class Bizkit : Fragment() {
             model.rollDice()
         }
 
-        model.displayed.rule.observe(viewLifecycleOwner, Observer {
+        model.displayed.observe(viewLifecycleOwner, Observer {
             run {
+                val players = model.party.getCurrentPlayers()
+                binding.rule = getString(model.displayed.value!!.rule, players[1], 0, players[2])
                 binding.invalidateAll()
-                println(it)
             }
         })
 
-
+        binding.rule = getString(model.displayed.value!!.rule)
 
         binding.viewModel = model
         binding.lifecycleOwner = this
@@ -46,4 +50,9 @@ class Bizkit : Fragment() {
         return binding.root
     }
 
+}
+
+@BindingAdapter("android:src")
+fun setImageViewResource(imageView: ImageView, resource: Int) {
+    imageView.setImageResource(resource)
 }
