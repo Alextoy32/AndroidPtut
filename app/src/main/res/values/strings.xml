@@ -1,9 +1,22 @@
 <resources>
     <string name="app_name">PtutCartes</string>
-    <string name="welcome_message">BIENVENUE SUR DÉSCARTES GAME</string>
+    <string name="welcome_message">BIENVENUE SUR NO NAME APP</string>
     <string name="party_games_label">PARTY GAMES</string>
     <string name="soft_games_label">SOFT GAMES</string>
     <string name="choose_a_game">CHOOSE A GAME</string>
+    <string name="startRule">Lancez les dés</string>
+    <string name="doubleN">%1$s distribue %2$d gorgées puis rejoue</string>
+    <string name="double5">%1$s boit 1 gorgées et distribue 5 puis rejoue</string>
+    <string name="double1">Tournée générale, tout le monde boit 1 gorgée puis rejoue</string>
+    <string name="som5">%1$s choisit de faire un mini jeu ou invente une règle</string>
+    <string name="som7">Bizkit! le dernier boit 1 gorgées, puis %1$s rejoue</string>
+    <string name="som9">%3$s boit 1 gorgée puis %1$s rejoue</string>
+    <string name="som10">%1$s boit 1 gorgées puis passe les dés à %3$s</string>
+    <string name="som11">%3$s boit 1 gorgée puis %1$s rejoue</string>
+    <string name="newPigeon">%1$s devient pigeon, tu boit 1 gorgées et passe les dés a %3$s</string>
+    <string name="pigeonBois">%1$s tu est pigeon, tu boit %2$d gorgées</string>
+    <string name="pigeonD6">%1$s n\'est plus pigeon, et distribue 6 gorgées</string>
+    <string name="passe">%1$s passe les dés a %3$s</string>
     <string name="biskit">Biskit</string>
     <string name="autoroute">Autoroute</string>
     <string name="pyramide">Pyramide</string>

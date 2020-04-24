@@ -16,9 +16,9 @@
         android:textColor="@color/primaryTextColor"
         android:textSize="21sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/imageView3"
-        app:layout_constraintStart_toStartOf="@+id/imageView3"
-        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+        app:layout_constraintEnd_toEndOf="@+id/bizkitImage"
+        app:layout_constraintStart_toStartOf="@+id/bizkitImage"
+        app:layout_constraintTop_toBottomOf="@+id/bizkitImage" />
 
     <TextView
         android:id="@+id/textView5"
@@ -34,7 +34,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/autorouteImage"
         android:layout_width="190dp"
         android:layout_height="181dp"
         android:layout_marginStart="40dp"
@@ -44,7 +44,7 @@
         app:layout_constraintTop_toTopOf="@+id/imageView4" />
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/bizkitImage"
         android:layout_width="190dp"
         android:layout_height="181dp"
         android:layout_marginEnd="40dp"
@@ -62,9 +62,9 @@
         android:layout_marginEnd="24dp"
         android:background="@color/primaryLightColor"
         android:src="@drawable/pyramide_update"
-        app:layout_constraintEnd_toStartOf="@+id/imageView3"
+        app:layout_constraintEnd_toStartOf="@+id/bizkitImage"
         app:layout_constraintHorizontal_bias="0.493"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintStart_toEndOf="@+id/autorouteImage"
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
     <TextView
@@ -76,9 +76,9 @@
         android:textColor="@color/primaryTextColor"
         android:textSize="21sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/imageView"
-        app:layout_constraintStart_toStartOf="@+id/imageView"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintEnd_toEndOf="@+id/autorouteImage"
+        app:layout_constraintStart_toStartOf="@+id/autorouteImage"
+        app:layout_constraintTop_toBottomOf="@+id/autorouteImage" />
 
     <TextView
         android:id="@+id/textView8"
