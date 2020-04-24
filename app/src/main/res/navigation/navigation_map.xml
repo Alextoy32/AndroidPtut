@@ -18,13 +18,5 @@
         android:id="@+id/partyGames"
         android:name="com.dreamTanAlex.ptutcartes.ui.partyGames.PartyGames"
         android:label="party_games_fragment"
-        tools:layout="@layout/party_games_fragment">
-        <action
-            android:id="@+id/action_partyGames_to_bizkit"
-            app:destination="@id/bizkit" />
-    </fragment>
-    <fragment
-        android:id="@+id/bizkit"
-        android:name="com.dreamTanAlex.ptutcartes.ui.bizkit.Bizkit"
-        android:label="Bizkit" />
+        tools:layout="@layout/party_games_fragment" />
 </navigation>

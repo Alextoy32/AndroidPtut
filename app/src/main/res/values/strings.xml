@@ -17,4 +17,7 @@
     <string name="pigeonBois">%1$s tu est pigeon, tu boit %2$d gorgées</string>
     <string name="pigeonD6">%1$s n\'est plus pigeon, et distribue 6 gorgées</string>
     <string name="passe">%1$s passe les dés a %3$s</string>
+    <string name="biskit">Biskit</string>
+    <string name="autoroute">Autoroute</string>
+    <string name="pyramide">Pyramide</string>
 </resources>
