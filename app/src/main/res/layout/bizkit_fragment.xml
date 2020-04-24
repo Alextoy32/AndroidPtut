@@ -6,6 +6,9 @@
     <data>
 
         <variable
+            name="rule"
+            type="String" />
+        <variable
             name="viewModel"
             type="com.dreamTanAlex.ptutcartes.ui.bizkit.BizkitViewModel" />
     </data>
@@ -24,7 +27,7 @@
             android:layout_marginTop="32dp"
             android:layout_marginEnd="32dp"
             android:layout_marginBottom="32dp"
-            android:src="@drawable/ic_dice_one"
+            android:src="@{viewModel.displayed.dice1, default=@drawable/ic_dice_one}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/imageView2"
             app:layout_constraintStart_toStartOf="parent"
@@ -37,7 +40,7 @@
             android:layout_marginTop="32dp"
             android:layout_marginEnd="32dp"
             android:layout_marginBottom="32dp"
-            android:src="@drawable/ic_dice_one"
+            android:src="@{viewModel.displayed.dice2, default=@drawable/ic_dice_one}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imageView"
