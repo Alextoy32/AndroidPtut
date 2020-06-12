@@ -40,7 +40,6 @@ open class ConnectionPage : Fragment() {
     private lateinit var viewModel: ConnectionPageViewModel
     lateinit var mManager: WifiP2pManager
     lateinit var mChannel: WifiP2pManager.Channel
-    lateinit var wifiManager : WifiManager
     private val intentFilter = IntentFilter()
 
 
@@ -51,8 +50,7 @@ open class ConnectionPage : Fragment() {
     lateinit var serverClass : ServerClass;
     lateinit var clientClass: ClientClass;
     lateinit var sendReceive: SendReceive;
-    lateinit var handlers: Handler;
-    lateinit var mReceiver : BroadcastReceiver
+
 
 
     override fun onCreateView(
@@ -62,37 +60,37 @@ open class ConnectionPage : Fragment() {
 
         var view = inflater.inflate(R.layout.connection_page_fragment, container, false)
 
-        var btnOnOff = view.findViewById<Button>(R.id.buttonOnOff)
-        val btnDiscover = view.findViewById<Button>(R.id.buttonDiscover)
-        val btnSend= view.findViewById<Button>(R.id.buttonSend)
-        val listView =  view.findViewById<ListView>(R.id.liste_device)
-        var readMsg = view.findViewById<TextView>(R.id.read_msg)
-        val writeMsg = view.findViewById<EditText>(R.id.editText)
-        val connectionStatus = view.findViewById<TextView>(R.id.connection_Status)
+        val btnOnOff = view?.findViewById<Button>(R.id.buttonOnOff)
+        val btnDiscover = view?.findViewById<Button>(R.id.buttonDiscover)
+        val btnSend= view?.findViewById<Button>(R.id.buttonSend)
+        val listView =  view?.findViewById<ListView>(R.id.liste_device)
+        var readMsg = view?.findViewById<TextView>(R.id.read_msg)
+        val writeMsg = view?.findViewById<EditText>(R.id.editText)
+        val connectionStatus = view?.findViewById<TextView>(R.id.connection_Status)
 
         mManager = context?.getSystemService(Context.WIFI_P2P_SERVICE) as WifiP2pManager
         mChannel = mManager.initialize(context, Looper.getMainLooper(), null)
-        wifiManager = requireContext().applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
+        val wifiManager = requireContext().applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
 
-        intentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION)
-        intentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION)
-        intentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION)
-        intentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION)
+        val stateChangedAction = intentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION)
+        val peersChangedAction = intentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION)
+        val connectionChangedAction = intentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION)
+        val thisDeviceChangedAction = intentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION)
 
         //Change button text
-        btnOnOff.setOnClickListener (){
+        btnOnOff?.setOnClickListener {
             if(wifiManager.isWifiEnabled){
-                Log.d("Déconnecté", "Déconnecté");
+                println("Déconnecté");
                 btnOnOff.setText("ON")
                 wifiManager.setWifiEnabled(false)
             }else {
-                Log.d("Connecté", "Connecté");
+                println("Connecté");
                 btnOnOff.setText("OFF")
                 wifiManager.setWifiEnabled(true)
             }
         }
 
-        btnDiscover.setOnClickListener {
+        btnDiscover?.setOnClickListener {
             mManager.discoverPeers(mChannel, object : WifiP2pManager.ActionListener {
                 override fun onSuccess() {
                     connectionStatus?.text = "Discovery Started"
@@ -104,7 +102,8 @@ open class ConnectionPage : Fragment() {
             })
         }
 
-        listView.setOnItemClickListener { adapterView: AdapterView<*>, view1: View, i: Int, l: Long ->
+        listView?.setOnItemClickListener { adapterView: AdapterView<*>, view1: View, i: Int, l: Long ->
+
             fun connect() {
                 // Picking the first device found on the network.
                 val device = peers[i]
@@ -136,22 +135,17 @@ open class ConnectionPage : Fragment() {
             }
         }
 
-        btnSend.setOnClickListener {
-            Log.d("BEFORE FONCTION!!!!:", "yo")
-            /*fun onClick(view: View) {*/
-                Log.d("BTNSEND!!!!:", "yo")
-                var msg : String = writeMsg?.text.toString()
+        btnSend?.setOnClickListener(View.OnClickListener {
+            fun onClick(view: View) {
+                var msg : String = writeMsg.toString()
                 sendReceive.write(msg.toByteArray())
-                Log.d("BTNSEND:", msg)
+            }
+        })
 
-        }
-
-        handlers = Handler(Handler.Callback {
+        var handlers : Handler = Handler(Handler.Callback {
             fun handleMessage(msg : Message) : Boolean {
                 var readBuff : ByteArray? = null;
                 var tempMsg : String;
-                Log.d("MESSAGE READ", MESSAGE_READ().toString())
-                Log.d("Message",msg.what.toString())
 
                 if (msg.what == MESSAGE_READ()){
                     readBuff = msg.obj as ByteArray;
@@ -165,6 +159,7 @@ open class ConnectionPage : Fragment() {
 
         return view
     }
+
 
 
     private val peerListListener = WifiP2pManager.PeerListListener { peerList ->
@@ -213,16 +208,19 @@ open class ConnectionPage : Fragment() {
 
             connection_Status.setText("GAME-MASTER")
             serverClass = ServerClass()
-            serverClass.run()
+            serverClass.start()
 
         } else if (info.groupFormed) {
 
             connection_Status.setText("Player")
             clientClass = ClientClass(groupOwnerAddress)
-            clientClass.run()
+            clientClass.onStart()
 
         }
     }
+
+
+    private lateinit var mReceiver : BroadcastReceiver
 
     override fun onResume() {
         super.onResume()
@@ -238,18 +236,18 @@ open class ConnectionPage : Fragment() {
         Log.i(TAG, "onPause")
     }
 
-     class ServerClass : ConnectionPage(){
+     class ServerClass : Thread() {
 
-         private lateinit var socket: Socket;
-         private lateinit var serverSocket: ServerSocket;
+         lateinit var sendReceive: SendReceive
+         lateinit var socket: Socket;
+         lateinit var serverSocket: ServerSocket;
 
-         fun run() {
+        override fun run() {
             try {
                 serverSocket = ServerSocket(8888)
                 socket = serverSocket.accept()
                 sendReceive = SendReceive(socket)
-                sendReceive.run()
-
+                sendReceive.onStart()
             } catch (e : IOException)
             {
                 e.printStackTrace();
@@ -258,12 +256,13 @@ open class ConnectionPage : Fragment() {
     }
 
 
-     class SendReceive(skt : Socket) : ConnectionPage() {
-        var socket : Socket = skt;
+     class SendReceive(socket: Socket) : ConnectionPage() {
+        private lateinit var socket : Socket;
         private lateinit var inputStream : InputStream;
         private lateinit var outputStream : OutputStream;
 
-        init {
+        fun SendReceive(skt : Socket){
+           socket = skt;
             try {
                 inputStream = socket.getInputStream();
                 outputStream = socket.getOutputStream();
@@ -274,8 +273,8 @@ open class ConnectionPage : Fragment() {
          fun run() {
             var buffer : ByteArray = ByteArray(1024);
             var bytes : Int;
-            Log.d("SOCKET :", socket.toString())
-            while (socket != null){
+
+            while (socket !=null){
                 try {
                     bytes = inputStream.read(buffer);
                     if(bytes>0){
@@ -296,21 +295,21 @@ open class ConnectionPage : Fragment() {
          }
     }
 
-     class ClientClass(hostAddress : String) : ConnectionPage() {
+     class ClientClass(groupOwnerAddress: String) : ConnectionPage() {
 
-          private var socket : Socket;
-          private var hostAdd : String;
 
-        init{
-            hostAdd = hostAddress
+         lateinit var socket : Socket;
+         lateinit var hostAdd : String;
+
+        fun  ClientClass ( hostAddress : InetAddress){
+            hostAdd = hostAddress.hostAddress
             socket = Socket()
         }
          fun run() {
             try {
-                Log.d("SOCKET :", hostAdd)
                 socket.connect(InetSocketAddress(hostAdd, 8888), 500)
                 sendReceive = SendReceive(socket)
-                sendReceive.run();
+                sendReceive.onStart();
             } catch (e : IOException) {
                 e.printStackTrace()
             }
