@@ -10,10 +10,7 @@ import android.net.wifi.WpsInfo
 import android.net.wifi.p2p.WifiP2pConfig
 import android.net.wifi.p2p.WifiP2pDevice
 import android.net.wifi.p2p.WifiP2pManager
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.os.Message
+import android.os.*
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -42,7 +39,7 @@ open class ConnectionPage : Fragment() {
 
     private lateinit var viewModel: ConnectionPageViewModel
     lateinit var mManager: WifiP2pManager
-    private lateinit var mChannel: WifiP2pManager.Channel
+    lateinit var mChannel: WifiP2pManager.Channel
     private val intentFilter = IntentFilter()
 
 
@@ -55,32 +52,33 @@ open class ConnectionPage : Fragment() {
     lateinit var sendReceive: SendReceive;
 
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
         var view = inflater.inflate(R.layout.connection_page_fragment, container, false)
-        val btnOnOff = view.findViewById<Button>(R.id.buttonOnOff)
-        val btnDiscover = view.findViewById<Button>(R.id.buttonDiscover)
-        val btsSend= view.findViewById<Button>(R.id.buttonSend)
-        val listView =  view.findViewById<ListView>(R.id.liste_device)
-        //var readMsg = view.findViewById<TextView>(R.id.read_msg)
-        val writeMsg = view.findViewById<TextInputLayout>(R.id.textInputLayout)
-        val connectionStatus = view.findViewById<TextView>(R.id.connection_Status)
+
+        val btnOnOff = view?.findViewById<Button>(R.id.buttonOnOff)
+        val btnDiscover = view?.findViewById<Button>(R.id.buttonDiscover)
+        val btnSend= view?.findViewById<Button>(R.id.buttonSend)
+        val listView =  view?.findViewById<ListView>(R.id.liste_device)
+        var readMsg = view?.findViewById<TextView>(R.id.read_msg)
+        val writeMsg = view?.findViewById<EditText>(R.id.editText)
+        val connectionStatus = view?.findViewById<TextView>(R.id.connection_Status)
 
         mManager = context?.getSystemService(Context.WIFI_P2P_SERVICE) as WifiP2pManager
         mChannel = mManager.initialize(context, Looper.getMainLooper(), null)
+        val wifiManager = requireContext().applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
 
         val stateChangedAction = intentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION)
         val peersChangedAction = intentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION)
         val connectionChangedAction = intentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION)
         val thisDeviceChangedAction = intentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION)
 
-        val wifiManager = requireContext().applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
-
         //Change button text
-        btnOnOff.setOnClickListener {
+        btnOnOff?.setOnClickListener {
             if(wifiManager.isWifiEnabled){
                 println("Déconnecté");
                 btnOnOff.setText("ON")
@@ -92,60 +90,77 @@ open class ConnectionPage : Fragment() {
             }
         }
 
-        btnDiscover.setOnClickListener {
+        btnDiscover?.setOnClickListener {
             mManager.discoverPeers(mChannel, object : WifiP2pManager.ActionListener {
                 override fun onSuccess() {
-                    connectionStatus.setText("Discovery Started")
+                    connectionStatus?.text = "Discovery Started"
                 }
                 override fun onFailure(i: Int) {
-                    connectionStatus.setText("Discovery Starting Failed")
+                    connectionStatus?.text = "Discovery Starting Failed"
 
                 }
             })
         }
 
-         listView.setOnItemClickListener { adapterView: AdapterView<*>, view1: View, i: Int, l: Long ->
+        listView?.setOnItemClickListener { adapterView: AdapterView<*>, view1: View, i: Int, l: Long ->
 
-             fun connect() {
-                 // Picking the first device found on the network.
-                 val device = peers[i]
+            fun connect() {
+                // Picking the first device found on the network.
+                val device = peers[i]
 
 
-                 val config = WifiP2pConfig().apply {
-                     deviceAddress = device.deviceAddress
-                     wps.setup = WpsInfo.PBC
-                 }
+                val config = WifiP2pConfig().apply {
+                    deviceAddress = device.deviceAddress
+                    wps.setup = WpsInfo.PBC
+                }
 
-                 mManager.connect(mChannel, config, object : WifiP2pManager.ActionListener {
+                mManager.connect(mChannel, config, object : WifiP2pManager.ActionListener {
 
-                     override fun onSuccess() {
-                         Toast.makeText(
-                             context,
-                             "Connected to "+device.deviceName,
-                             Toast.LENGTH_SHORT
-                         ).show()
-                     }
+                    override fun onSuccess() {
+                        Toast.makeText(
+                            context,
+                            "Connected to "+device.deviceName,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
 
-                     override fun onFailure(reason: Int) {
-                         Toast.makeText(
-                             context,
-                             "Connect failed. Retry.",
-                             Toast.LENGTH_SHORT
-                         ).show()
-                     }
-                 })
-             }
-         }
+                    override fun onFailure(reason: Int) {
+                        Toast.makeText(
+                            context,
+                            "Connect failed. Retry.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                })
+            }
+        }
 
-        btsSend.setOnClickListener(View.OnClickListener {
+        btnSend?.setOnClickListener(View.OnClickListener {
             fun onClick(view: View) {
                 var msg : String = writeMsg.toString()
                 sendReceive.write(msg.toByteArray())
             }
         })
 
+        var handlers : Handler = Handler(Handler.Callback {
+            fun handleMessage(msg : Message) : Boolean {
+                var readBuff : ByteArray? = null;
+                var tempMsg : String;
+
+                if (msg.what == MESSAGE_READ()){
+                    readBuff = msg.obj as ByteArray;
+                    tempMsg = String(readBuff, 0, msg.arg1)
+                    readMsg?.text = tempMsg;
+                }
+                return true
+            }
+            return@Callback true;
+        })
+
         return view
     }
+
+
 
     private val peerListListener = WifiP2pManager.PeerListListener { peerList ->
 
@@ -192,6 +207,7 @@ open class ConnectionPage : Fragment() {
         if (info.groupFormed && info.isGroupOwner) {
 
             connection_Status.setText("GAME-MASTER")
+            serverClass = ServerClass()
             serverClass.start()
 
         } else if (info.groupFormed) {
@@ -220,11 +236,11 @@ open class ConnectionPage : Fragment() {
         Log.i(TAG, "onPause")
     }
 
-    abstract class ServerClass : Thread() {
+     class ServerClass : Thread() {
 
-        abstract var sendReceive: SendReceive
-        abstract var socket: Socket;
-        abstract var serverSocket: ServerSocket;
+         lateinit var sendReceive: SendReceive
+         lateinit var socket: Socket;
+         lateinit var serverSocket: ServerSocket;
 
         override fun run() {
             try {
@@ -239,23 +255,6 @@ open class ConnectionPage : Fragment() {
          }
     }
 
-    var handlers : Handler = Handler(Handler.Callback {
-        fun handleMessage(msg : Message) : Boolean {
-            var readBuff : ByteArray? = null;
-            var tempMsg : String?;
-            var readMsg = view?.findViewById<TextView>(R.id.read_msg)
-            when(msg.what)
-            {
-                MESSAGE_READ() ->
-                    readBuff = msg.obj as ByteArray
-                    //tempMsg = (readBuff.toString(), 0, msg.arg1)
-                    tempMsg = readBuff?.let { it1 -> String(it1, 0, msg.arg1).toString() };
-                    readMsg?.text = tempMsg;
-            }
-            return true
-        }
-        return@Callback true;
-    })
 
      class SendReceive(socket: Socket) : ConnectionPage() {
         private lateinit var socket : Socket;
