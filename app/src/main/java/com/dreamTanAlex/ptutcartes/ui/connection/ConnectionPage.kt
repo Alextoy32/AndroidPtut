@@ -50,7 +50,7 @@ open class ConnectionPage : Fragment() {
     lateinit var serverClass : ServerClass;
     lateinit var clientClass: ClientClass;
     lateinit var sendReceive: SendReceive;
-
+    lateinit var handlers: Handler;
 
 
     override fun onCreateView(
@@ -142,7 +142,7 @@ open class ConnectionPage : Fragment() {
             }
         })
 
-        var handlers : Handler = Handler(Handler.Callback {
+        handlers = Handler(Handler.Callback {
             fun handleMessage(msg : Message) : Boolean {
                 var readBuff : ByteArray? = null;
                 var tempMsg : String;
