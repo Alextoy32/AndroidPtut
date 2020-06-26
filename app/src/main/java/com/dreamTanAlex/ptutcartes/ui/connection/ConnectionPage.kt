@@ -47,11 +47,11 @@ open class ConnectionPage : Fragment() {
 
     fun MESSAGE_READ() : Int = 1
 
-    lateinit var serverClass : ServerClass;
+   /* lateinit var serverClass : ServerClass;
     lateinit var clientClass: ClientClass;
-    lateinit var sendReceive: SendReceive;
-
-
+    lateinit var sendReceive: SendReceive;*/
+    lateinit var wifiManager : WifiManager
+    lateinit var handlers : Handler
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -70,7 +70,7 @@ open class ConnectionPage : Fragment() {
 
         mManager = context?.getSystemService(Context.WIFI_P2P_SERVICE) as WifiP2pManager
         mChannel = mManager.initialize(context, Looper.getMainLooper(), null)
-        val wifiManager = requireContext().applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
+        wifiManager = requireContext().applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
 
         val stateChangedAction = intentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION)
         val peersChangedAction = intentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION)
@@ -104,7 +104,6 @@ open class ConnectionPage : Fragment() {
 
         listView?.setOnItemClickListener { adapterView: AdapterView<*>, view1: View, i: Int, l: Long ->
 
-            fun connect() {
                 // Picking the first device found on the network.
                 val device = peers[i]
 
@@ -132,17 +131,16 @@ open class ConnectionPage : Fragment() {
                         ).show()
                     }
                 })
-            }
+
         }
 
-        btnSend?.setOnClickListener(View.OnClickListener {
-            fun onClick(view: View) {
+        /*btnSend?.setOnClickListener(View.OnClickListener {
+            /*fun onClick(view: View) {*/
                 var msg : String = writeMsg.toString()
-                sendReceive.write(msg.toByteArray())
-            }
+                /*sendReceive.write(msg.toByteArray())*/
         })
 
-        var handlers : Handler = Handler(Handler.Callback {
+        handlers = Handler(Handler.Callback {
             fun handleMessage(msg : Message) : Boolean {
                 var readBuff : ByteArray? = null;
                 var tempMsg : String;
@@ -155,7 +153,7 @@ open class ConnectionPage : Fragment() {
                 return true
             }
             return@Callback true;
-        })
+        })*/
 
         return view
     }
@@ -207,14 +205,14 @@ open class ConnectionPage : Fragment() {
         if (info.groupFormed && info.isGroupOwner) {
 
             connection_Status.setText("GAME-MASTER")
-            serverClass = ServerClass()
-            serverClass.start()
+           /* serverClass = ServerClass(sendReceive)
+            serverClass.run()*/
 
         } else if (info.groupFormed) {
 
             connection_Status.setText("Player")
-            clientClass = ClientClass(groupOwnerAddress)
-            clientClass.onStart()
+            /*clientClass = ClientClass(groupOwnerAddress, sendReceive)
+            clientClass.run()*/
 
         }
     }
@@ -236,18 +234,18 @@ open class ConnectionPage : Fragment() {
         Log.i(TAG, "onPause")
     }
 
-     class ServerClass : Thread() {
+   /*  class ServerClass(sendReceive: SendReceive) : Thread() {
 
-         lateinit var sendReceive: SendReceive
          lateinit var socket: Socket;
          lateinit var serverSocket: ServerSocket;
+         var sendReceives = sendReceive
 
-        override fun run() {
+         override fun run() {
             try {
                 serverSocket = ServerSocket(8888)
                 socket = serverSocket.accept()
-                sendReceive = SendReceive(socket)
-                sendReceive.onStart()
+                sendReceives = SendReceive(socket)
+                sendReceives.run()
             } catch (e : IOException)
             {
                 e.printStackTrace();
@@ -256,13 +254,12 @@ open class ConnectionPage : Fragment() {
     }
 
 
-     class SendReceive(socket: Socket) : ConnectionPage() {
-        private lateinit var socket : Socket;
+    class SendReceive(skt: Socket) : ConnectionPage() {
+        private var socket : Socket = skt;
         private lateinit var inputStream : InputStream;
         private lateinit var outputStream : OutputStream;
 
-        fun SendReceive(skt : Socket){
-           socket = skt;
+        init {
             try {
                 inputStream = socket.getInputStream();
                 outputStream = socket.getOutputStream();
@@ -295,26 +292,26 @@ open class ConnectionPage : Fragment() {
          }
     }
 
-     class ClientClass(groupOwnerAddress: String) : ConnectionPage() {
+     class ClientClass(hostAddress: String, sendReceive: SendReceive) : Thread() {
 
+          var socket : Socket;
+          var hostAdd : String;
+          var sendReceives = sendReceive
 
-         lateinit var socket : Socket;
-         lateinit var hostAdd : String;
-
-        fun  ClientClass ( hostAddress : InetAddress){
-            hostAdd = hostAddress.hostAddress
+        init {
+            hostAdd = hostAddress
             socket = Socket()
         }
-         fun run() {
+         override fun run() {
             try {
                 socket.connect(InetSocketAddress(hostAdd, 8888), 500)
-                sendReceive = SendReceive(socket)
-                sendReceive.onStart();
+                sendReceives = SendReceive(socket)
+                sendReceives.run();
             } catch (e : IOException) {
                 e.printStackTrace()
             }
         }
-    }
+    }*/
 
 
 
